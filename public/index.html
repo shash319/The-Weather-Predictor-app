@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weatherly</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="container">
+        <fieldset>
+            <form id="weatherForm" autocomplete="off">
+                <input name="city" id="city" type="text" placeholder="Enter a City" required class="ghost-input" />
+                <button type="submit" class="ghost-button">Get Weather</button>
+            </form>
+            <div id="result"></div>
+        </fieldset>
+    </div>
+
+    <script>
+        document.getElementById("weatherForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const city = document.getElementById("city").value;
+            const apiKey = "492c26340a43a026aaff5765ba16848b";
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+            const resultDiv = document.getElementById("result");
+
+            resultDiv.textContent = "Loading...";
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.main) {
+                    resultDiv.innerHTML = `
+                        <p>City: ${data.name}</p>
+                        <p>Temperature: ${data.main.temp}°C</p>
+                        <p>Weather: ${data.weather[0].main}</p>
+                    `;
+                } else {
+                    resultDiv.textContent = "City not found. Please try again!";
+                }
+            } catch (error) {
+                resultDiv.textContent = "Error fetching weather data. Please try again!";
+            }
+        });
+    </script>
+</body>
+</html>
